@@ -1,0 +1,657 @@
+ Assignment No.1
+1) Write a java socket programming in which client sends a text  and
+server receives it
+->File: MyServer.java
+import java.io.*;  
+import java.net.*;  
+public class MyServer {  
+public static void main(String[] args){  
+try{  
+ServerSocket ss=new ServerSocket(6666);  
+Socket s=ss.accept();//establishes connection   
+DataInputStream dis=new DataInputStream(s.getInputStream());  
+String  str=(String)dis.readUTF();  
+System.out.println("message= "+str);  
+ss.close();  
+}catch(Exception e){System.out.println(e);}  
+}  
+}  
+
+
+
+File: MyClient.java
+import java.io.*;  
+import java.net.*;  
+public class MyClient {  
+public static void main(String[] args) {  
+try{      
+Socket s=new Socket("localhost",6666);  
+DataOutputStream dout=new DataOutputStream(s.getOutputStream());  
+dout.writeUTF("Hello Server");  
+dout.flush();  
+dout.close();  
+s.close();  
+}catch(Exception e){System.out.println(e);}  
+}  
+}   
+
+output->
+MyServer.cmd
+C:\Program Files\Java\jdk-18.0.1\bin>javac MyServer.java
+
+C:\Program Files\Java\jdk-18.0.1\bin>java MyServer
+messagehello Server
+
+MyClient.cmd
+C:\Program Files\Java\jdk-18.0.1\bin>javac MyClient.java
+
+C:\Program Files\Java\jdk-18.0.1\bin>java MyClient
+
+
+
+2)  Write a program to demonstrate URL class.
+->import java.io.*;
+import java.net.*;
+public class URLDemo
+{
+public static void main(String[]args)
+{
+try
+{
+URL url=new URL("http:// http://www.rediff.com/news.html ");
+System.out.println("Protocol: "+url.getProtocol());
+System.out.println("Host Name: " +url.getHost());
+System.out.println("Port Number: "+url.getPort());
+System.out.println("File Name:  "+url.getFile());
+}
+catch(Exception e)
+{
+System.out.println(e);
+}
+}
+}
+output->
+Protocol: http
+Host Name:  http
+Port Number: -1
+File Name:  //www.rediff.com/news.html
+
+3) Write a program to demonstrate InetAddress class.
+->import java.io.*;
+import java.net.*;
+public class InetDemo
+{
+	public static void main(String[]args)
+	{
+		try
+		{
+			InetAddress ip=InetAddress.getByName("www.rediff.com");
+			System.out.println("Host Name:"+ip.getHostName());
+			System.out.println("IP Address:"+ip.getHostAddress());
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+			
+		}
+	}
+}
+output->
+Host Name: www.rediff.com
+IP Address: 206.51.231.148
+
+
+4) Write a program to demonstrate use of Datagram Socket.
+->File:DSender.java
+import java.net.*;
+public class DSender
+{
+public static void main(String[]args)throws Exception
+
+{
+DatagramSocket ds=new DatagramSocket();
+String str="Welcome java";
+InetAddress ip=InetAddress.getByName("127.0.0.1");
+DatagramPacket dp=new DatagramPacket(str.getBytes(),str.length(),ip,3000);
+ds.send(dp);
+ds.close();
+}
+}
+
+File:DReceiver.java
+import java.net.*;
+public class DReceiver
+{
+public static void main(String[]args)throws Exception
+{
+DatagramSocket ds=new DatagramSocket(3000);
+byte[]buf =new byte[1024];
+DatagramPacket dp=new DatagramPacket(buf,1024);
+ds.receive(dp);
+String str=new String(dp.getData(),0,dp.getLength());
+System.out.println(str);
+ds.close();
+}
+}
+output-> 
+DReceiver.cmd
+C:\Program Files\Java\jdk-18.0.1\bin>javac DReceiver.java
+
+C:\Program Files\Java\jdk-18.0.1\bin>java DReceiver
+Welcome java
+
+DSender.cmd
+C:\Program Files\Java\jdk-18.0.1\bin>javac DSender.java
+
+C:\Program Files\Java\jdk-18.0.1\bin>java DSender
+
+
+5) Write a  program to create simple applet  which displays “ Hello “
+->import java.applet.Applet;
+import java.awt.Graphics;
+public class First extends Applet
+{
+public void paint(Graphics g)
+{
+g.drawString("Hello",150,150);
+}
+}
+
+/*<applet code="First.class" width="300" height="300">
+</applet>
+*/
+
+output->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+6) Write a  program to create parameterized applet.
+->import java.applet.Applet;
+import java.awt.Graphics;
+public class UserParam extends Applet
+{
+public void paint(Graphics g)
+{
+String str=getParameter("msg");
+g.drawString(str,50,50);
+}
+}
+
+myapplet1.html
+<html>
+<body>
+<applet code="UserParam.class" width="300" height="300">
+<param name="msg" value="Welcome to applet">
+</applet>
+</body>
+</html>
+
+
+7) Write a  program to create applet that uses  getDocument Base() 
+   or getCodeBase() method.
+->import java.awt.*;
+import java.applet.*;
+import java.net.*;
+
+/*
+<applet code="Bases" width=300 height=50>
+</applet>
+*/
+ public class Bases extends Applet
+{
+public void paint(Graphics g)
+{
+String msg;
+URl url=getCodeBase();
+Msg="code base:"+url.toString();
+g.drawString(msg,10,20);
+url=getDocumentBase();
+msg="Document base:"+url.toString();
+g.drawString(msg,10,40);
+}
+}
+output->
+
+
+
+
+
+
+8 ) Write a  program to  handle  keyboard events.
+-> import java.awt.*;
+import java.awt.event.*;
+
+public class KeyBoardEvent extends Frame implements KeyListener{
+	Label l;
+	TextArea area;
+	KeyBoardEvent(){
+		l=new Label();
+		l.setBounds(20, 50,100 ,20);
+		area=new TextArea();
+		area.setBounds(20, 80, 300, 300);
+		area.addKeyListener(this);
+		add(l);
+		add(area);
+		setSize(400,400);
+		setLayout(null);
+		setVisible(true);
+		
+	}
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		l.setText("Key Pressed");
+	}
+@Override
+public void keyTyped(KeyEvent e) {
+	l.setText("key Typed");
+	
+}
+@Override
+public void keyReleased(KeyEvent e) {
+	l.setText("key Released");
+	
+}
+
+	public static void main(String[] args) {
+		new KeyBoardEvent();
+	}
+	
+}
+
+
+
+output->
+
+
+
+
+
+9 ) Write a  program to  handle  mouse events.
+->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+10) Write a  program to  demonstrate  use of any one Adapter class.
+->
+import java.awt.*;    
+import java.awt.event.*;    
+  
+public class Adapter {  
+    Frame f;      
+    Adapter() {    
+f = new Frame ("Window Adapter");    
+f.addWindowListener (new WindowAdapter() {    
+public void windowClosing (WindowEvent e) {    
+      f.dispose();    
+   }    
+   });    
+           
+f.setSize (400, 400);    
+f.setLayout (null);    
+f.setVisible (true);    
+    }    
+  
+public static void main(String[] args) {    
+    new Adapter();    
+}    
+}    
+
+output->
+
+
+
+
+
+
+
+
+
+11) Write a  program to  demonstrate  use of anonymous inner class.
+->import java.awt.*;
+import java.awt.event.*;
+public class Anonymous extends Frame
+{
+	TextField tf;
+	Anonymous()
+	{
+		tf=new TextField();
+		tf.setBounds(60, 50, 170, 20);
+		Button b=new Button("click me");
+		b.setBounds(50, 120, 80, 30);
+		b.addActionListener(new ActionListener()
+		{
+		@Override
+			public void actionPerformed(ActionEvent e) {
+				tf.setText("hello");
+				
+			}
+
+		});
+			add(b);
+			add(tf);
+			setSize(300,300);
+			setLayout(null);
+			setVisible(true);
+	}
+
+  public static void main(String[] args)
+  {
+	new Anonymous();
+
+	}
+
+}
+
+output
+hello
+click me
+
+
+
+
+
+12) Write a  program to  demonstrate  use of  text event.
+
+-> import java.awt.*;
+import java.awt.event.*;
+public class TextEvent implements TextListener{
+	Label l1,l2;
+	TextField f1;
+	Frame f;
+	String str;
+	TextEvent()
+	{
+		f=new Frame("handling TextEvent");
+		l1=new Label("Type in the textField ,to see the textevents it generates-",Label.CENTER);
+		l2=new Label();
+		f1=new TextField(25);
+		f.setLayout(new FlowLayout());
+		f.setLayout(new FlowLayout());
+		f.add(l1);
+		f.add(f1);
+		f.add(l2);
+		f1.addTextListener(this);
+	    f.setSize(340,200);
+	    f.setVisible(true);
+	}
+
+	@Override
+	public void textValueChanged(java.awt.event.TextEvent e) {
+		
+	}
+	public static void main(String[] args) {
+		new TextEvent();
+	}
+
+	
+
+}
+output->handling TextEvent        -   []   *
+Type in the textField,to see the textevent it generates-
+       [hhhhhh]
+
+
+13) Design a form for simple arithmetic calculations
+              (Use Swing  components).
+->import java.awt.event.*;
+import java.awt.*;
+import javax.swing.*;
+public class Calculator extends JFrame implements ActionListener
+{    
+   JButton b10,b11,b12,b13,b14,b15; 
+   JButton b[]=new JButton[10];
+    int i,r,n1,n2;
+    JTextField res;
+    char op; 
+   public Calculator()
+  {
+     super("Calulator");
+      setLayout(new BorderLayout());
+      JPanel p=new JPanel();
+      p.setLayout(new GridLayout(4,4));
+      for(int i=0;i<=9;i++)
+      {
+        b[i]=new JButton(i+"");
+        p.add(b[i]);
+        b[i].addActionListener(this);
+      }
+      b10=new JButton("+");
+      p.add(b10);
+      b10.addActionListener(this);
+ 
+      b11=new JButton("-");
+      p.add(b11);
+      b11.addActionListener(this);
+ 
+      b12=new JButton("*");
+      p.add(b12);
+      b12.addActionListener(this);
+ 
+      b13=new JButton("/");
+      p.add(b13);
+      b13.addActionListener(this);
+ 
+      b14=new JButton("=");
+      p.add(b14);
+      b14.addActionListener(this);
+ 
+      b15=new JButton("C");
+      p.add(b15);
+      b15.addActionListener(this);
+ 
+      res=new JTextField(10);
+      add(p,BorderLayout.CENTER);
+      add(res,BorderLayout.NORTH);
+      setVisible(true);
+      setSize(200,200);
+     }
+public void actionPerformed(ActionEvent ae)
+{
+  JButton pb=(JButton)ae.getSource();
+	if(pb==b15)
+	{
+	 r=n1=n2=0;
+	 res.setText("");
+	}
+	else if(pb==b14)
+		{
+ 		 n2=Integer.parseInt(res.getText());
+  		 eval();
+  		 res.setText(""+r);
+		}
+ 
+		else
+		{
+ 		  Boolean opf=false;
+ 		  if(pb==b10)
+			{ op='+';
+			  opf=true;
+			}
+ 		  if(pb==b11)
+			{ op='-';opf=true;}
+		  if(pb==b12)
+			{ op='*';opf=true;}
+		  if(pb==b13)
+			{ op='/';opf=true;}
+	
+		  if(opf==false)
+		  {
+  		   for(i=0;i<10;i++)
+		   {
+		  	if(pb==b[i])
+     		  	{
+           	   	String t=res.getText();
+           		t+=i;
+            		res.setText(t);
+		  	}
+		   }
+		  }
+		  else
+		  {
+    			n1=Integer.parseInt(res.getText());
+     			res.setText("");
+		  }
+		}
+}
+int eval()
+{
+	switch(op)
+	{
+ 	case '+':   r=n1+n2;  break;
+ 	case '-':    r=n1-n2;   break;
+ 	case '*':    r=n1*n2; break;
+ 	case '/':    r=n1/n2; break;
+ 
+	}
+	return 0;
+}
+ 
+  public static void main(String arg[])
+  {
+      new Calculator();
+   }
+}
+
+
+}
+		
+
+
+
+14) Design a form for   calculating simple and compound interest
+             (Use Swing   components)
+
+->import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.*;
+
+public class Interest extends JFrame implements ActionListener{
+	JButton b1,b2;
+		JTextField f1,f2,f3,f4,f5,f6;
+		Label l1,l2,l3,l4,l5,l6;
+		calci()
+		{
+			b1=new JButton("Simple Intrest");
+			b2=new JButton("Compound intrest");
+			
+			f1=new JTextField();
+			f2=new JTextField();
+			f3=new JTextField();
+			f4=new JTextField();
+			f5=new JTextField();
+			f6=new JTextField();
+			l1=new Label("Enter the Principle:-");
+			l2=new Label("Enter the Rate:-");
+			l3=new Label("Enter the Time:-");
+			l4=new Label("INTREST IS:-");
+	        l5=new Label("Number of time Compunded:-");
+			l6=new Label("------ INTREST CALCULATOR ------");
+			setLayout(null);
+			l1.setBounds(100, 100, 100, 40);
+			f1.setBounds(210, 100, 100, 40);
+			l2.setBounds(100, 150, 100, 40);
+			f2.setBounds(210, 150, 100, 40);
+			l3.setBounds(100, 200, 100, 40);
+			f3.setBounds(210,200, 100, 40);
+			f4.setBounds(210,250, 150, 40);
+			l4.setBounds(100, 250, 100, 40);
+			f5.setBounds(260, 300, 100, 40);
+			l6.setBounds(200, 50, 200, 40);
+			b1.setBounds(150,350, 150, 40);
+			b2.setBounds(310,350, 150, 40);
+			l5.setBounds(100, 300, 150, 40);
+			
+			add(f4);
+			add(f5);
+			add(l5);
+			add(b2);
+			add(b1);
+			add(l6);
+			add(l4);
+			add(l3);
+			add(f3);
+			add(l1);
+			add(f1);
+			add(l2);
+			add(f2);
+			b1.addActionListener(this);
+			b2.addActionListener(this);
+			
+		}
+		
+
+		public static void main(String[] args) {
+			Interest v = new Interest();
+			v.setVisible(true);
+			v.setSize(800,800);
+			v.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// TODO Auto-generated method stub
+			if(e.getSource()==b1) {
+				String str=f1.getText();
+				String str1=f2.getText();
+				String str2=f3.getText();
+				double i=Integer.parseInt(str);
+				double j=Integer.parseInt(str1);
+				double k=Integer.parseInt(str2);
+				
+				f4.setText(String.valueOf((i*j*k)/100));
+				}
+				if(e.getSource()==b2) {
+					String str=f1.getText();
+					String str1=f2.getText();
+					String str2=f3.getText();
+					String str3=f5.getText();
+					double i=Integer.parseInt(str);
+					double j=Integer.parseInt(str1);
+					double k=Integer.parseInt(str2);
+					int    l=Integer.parseInt(str3);
+                                        
+					f4.setText(String.valueOf(i*(Math.pow((1+j/100),(k*l)))-i));
+				}
+		
+		}
+
+
+output->
+
+
+15) Write the following program using Swing component.
+  An Election is conducted between 3 candidates. 
+There are N number of voters. By clicking Next Voter Button textboxes and RadioButtons need to be cleared.
+ By clicking  Results, the votes obtained by each candidate and the winner candidate to be displayed in text area. 
+Exit button should exit program.
+->
+

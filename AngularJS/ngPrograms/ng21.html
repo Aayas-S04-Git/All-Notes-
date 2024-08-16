@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<body ng-app="myApp">
+<p> color in rootScope's(global to whole angular application)  :</p>
+<h1>{{color}}</h1>
+<div ng-controller="myCtrl">
+<p>color in  controller (local to controller) </p>
+<h1>{{color}}</h1>
+</div>
+<p>  still color in rootScope's(global to whole angular application) :</p>
+<h1>{{color}}</h1>
+<script>
+var app = angular.module('myApp', []);
+app.run(function($rootScope)
+{
+    $rootScope.color = 'blue';
+});
+app.controller('myCtrl', function($scope) 
+{
+    $scope.color = "red";
+});
+</script> 
+</body>
+</html>

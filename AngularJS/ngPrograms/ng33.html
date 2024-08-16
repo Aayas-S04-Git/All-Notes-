@@ -1,0 +1,38 @@
+<!Doctype html>
+<html>
+   <head>
+      <title>Angular JS Forms</title>
+   </head>   
+   <body>
+      <div ng-app = "studentApp" ng-controller = "studentOne">
+         <p>{{name}} <br/> {{grade}} </p>         
+         <div ng-controller = "studentTwo">
+            <p>{{name}} <br/> {{grade}}</p>
+         </div>         
+         <div ng-controller = "studentThree">
+            <p>{{name}} <br/> {{grade}} </p>
+         </div>                        
+      </div>
+      <script src = "https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js">
+      </script>      
+      <script>
+         var t = angular.module("studentApp", []);         
+         t.controller("studentOne", function($scope) 
+        {
+            $scope.name = "John";
+            $scope.grade = "A";
+         });
+         t.controller("studentTwo", function($scope) 
+        {
+            $scope.name = "jay";
+            $scope.grade = "B";
+         });
+         t.controller("studentThree", function($scope) 
+       {
+            $scope.name = "diva";
+            $scope.grade = "C";
+         });                        
+      </script>      
+   </body>
+</html>
+Output:

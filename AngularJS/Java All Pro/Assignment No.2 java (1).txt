@@ -1,0 +1,224 @@
+1) Write a simple JDBC program which will   retrieve a data from              
+           Database( Use MS-Access  database with type-one driver).
+->
+
+
+
+
+
+
+
+
+
+2) Write a JDBC program which demonstrates the use of Prepared  
+           Statement( Use Oracle  database with type-one driver).
+->
+
+
+
+
+
+
+
+
+
+
+3) Write a JDBC program which demonstrates the use of Prepared  
+           Statement( Use Oracle  database with type-four driver).
+->
+import java.sql.*;
+
+public class InsertPrepared {
+
+	public static void main(String[] args) {
+		try
+		{
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","vikas","vikas");
+			PreparedStatement stmt=con.prepareStatement("insert into cust values(?,?,?)");
+			stmt.setInt(1, 3);
+			stmt.setString(2, "Raj");
+			stmt.setInt(3, 90);
+			int i=stmt.executeUpdate();
+			System.out.println(i + "records inserted");
+			con.close();
+			
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+
+}
+output-> 1 Record inserted
+SQL> select *from cust;
+
+    ROLLNO NAME                                          MARKS
+---------- ---------------------------------------- ----------
+         1 vikas                                            80
+         2 vijay                                            90
+         3 Raj       
+
+
+4) Write a JDBC program which demonstrates the use of Callable 
+         Statement( Use Oracle  database with type-four driver).
+->    
+Procedure:-   
+ create or replace procedure "INSERTR"
+ (id IN NUMBER,
+ name IN VARCHAR2)
+ is
+ begin
+ insert into user420 values(id,name);
+ end;
+ /           
+
+
+
+
+File:Proc.java
+import java.sql.*;
+public class Proc {
+	public static void main(String[] args) throws Exception{  
+		  
+		Class.forName("oracle.jdbc.driver.OracleDriver");  
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","vikas","vikas");  
+		  
+		CallableStatement stmt=con.prepareCall("{call insertR(?,?)}");  
+		stmt.setInt(1,1011);  
+		stmt.setString(2,"Amit");  
+		stmt.execute();  
+		  
+		System.out.println("success");  
+		}  
+		}  
+
+
+output:- 
+select *from user420;
+
+    ID NAME
+------ ----------------
+  1011 Amit
+
+
+
+
+
+
+5) Write a JDBC program that will call stored procedure.
+       ( Use Oracle  database with type-four driver).
+->
+Let's create the simple function in the database first.
+create  function sum4  
+(n1 in number,n2 in number)  
+return number  
+is   
+temp number(8);  
+begin  
+temp :=n1+n2;  
+return temp;  
+end;  
+/  
+Now, let's write the simple program to call the function.
+import java.sql.*;  
+  
+public class FuncSum {  
+public static void main(String[] args) throws Exception{  
+  
+Class.forName("oracle.jdbc.driver.OracleDriver");  
+Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","system","oracle");  
+CallableStatement stmt=con.prepareCall("{?= call sum4(?,?)}");  
+stmt.setInt(2,10);  
+stmt.setInt(3,43);  
+stmt.registerOutParameter(1,Types.INTEGER);  
+stmt.execute();    
+System.out.println(stmt.getInt(1));  
+          
+}  
+}  
+O/p:53
+
+
+
+6) Write a JDBC program that will demonstrate how to connect 
+        oracle by using JDBC Type-4th driver.
+->import java.sql.*;
+public class QuestionSix {
+
+	public static void main(String[] args) throws Exception
+	{
+	
+		  
+			//Register to driver  
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			//Connection With Database
+			Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","vikas","vikas");
+			
+			System.out.println("Connection Successfully!!!");
+			con.close();
+			System.out.println("Connection closed!");
+		}
+	}
+
+output:Connection Successfully!!!
+       Connection closed!
+
+
+
+
+7) Write a JDBC program that will use Scrollable Result set to 
+        retrieve data from the database( Use Oracle  database with  
+        type-four driver)..
+->import java.sql.*;
+public class Question7 {
+
+	public static void main(String[] args)throws Exception {
+		Class.forName("oracle.jdbc.driver.OracleDriver");  
+		Connection con=DriverManager.getConnection("jdbc:oracle:thin:@localhost:1521:xe","vikas","vikas");  
+		Statement stmt=con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,
+                ResultSet.CONCUR_READ_ONLY);  
+		 ResultSet rs = stmt.executeQuery("select * from cust");
+	        System.out.println("RECORDS IN THE TABLE...");
+	        while (rs.next()) {
+	            System.out.println(rs.getInt(1) + " -> " + rs.getString(2)+"-> "+rs.getInt(3));
+	        }
+	        rs.first();
+	        System.out.println("FIRST RECORD...");
+	        System.out.println(rs.getInt(1) + " -> " + rs.getString(2)+"-> "+rs.getInt(3));
+	        rs.absolute(3);
+	        System.out.println("THIRD RECORD...");
+	        System.out.println(rs.getInt(1) + " -> " + rs.getString(2)+"-> "+rs.getInt(3));
+	        rs.last();
+	        System.out.println("LAST RECORD...");
+	        System.out.println(rs.getInt(1) + " -> " + rs.getString(2)+"-> "+rs.getInt(3));
+	        rs.previous();
+	        rs.relative(-1);
+	        System.out.println("LAST TO FIRST RECORD...");
+	        System.out.println(rs.getInt(1) + " -> " + rs.getString(2)+"-> "+rs.getInt(3));
+	        con.close();
+	  }
+}
+output->
+RECORDS IN THE TABLE...
+1 -> vikas-> 80
+2 -> vijay-> 90
+3 -> Raj-> 90
+3 -> Raj-> 90
+3 -> Raj-> 90
+FIRST RECORD...
+1 -> vikas-> 80
+THIRD RECORD...
+3 -> Raj-> 90
+LAST RECORD...
+3 -> Raj-> 90
+LAST TO FIRST RECORD...
+3 -> Raj-> 90
+
+
+8) Write a JDBC program(GUI ) that will take employee information from 
+      the user like (eid, name, DOB, contact no) .Perform the 
+      operations like insert, delete, update, search with the   
+      Database.
+->

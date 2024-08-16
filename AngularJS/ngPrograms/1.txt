@@ -1,0 +1,21 @@
+Application Folders-
+1.\Bin- used to store assembly files    .dll/.exe
+
+2.\App_Code-  ---------- source code files   .cs,.vb etc.
+--automatically compiles files stored inside....
+
+3.\App_GlobalResources-- ------------ resources files used for entire web 
+site globally...
+.resx
+
+4.\App_LocalResources-- ------------ resources files used for dedicated single
+page only... 			.resx
+
+5.\App_WebReferences-   web services.           .wsdl
+
+6.\App_Data-     database files for application.
+.accdb,.mdf ,.xml etc
+
+7.\App_Themes--   files to define look and feel of application
+images(.jpg,.gif,.bmp,.png),CSS(.css),Skin File(.skin)
+etc

@@ -1,0 +1,922 @@
+  1)Write a simple servlet  that prints “Hello"
+->
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/DemoServlet")
+public class DemoServlet extends HttpServlet 
+{
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	{
+		res.setContentType("text/html");
+		PrintWriter pw=res.getWriter();
+		pw.println("hello");
+		pw.close();
+		}
+}
+
+output->  Hello
+
+2)Write a program to create servlet with doPost()
+->File:DoPost.html
+
+<html>
+<body>
+<form action="DoPost" method="post">
+Name:<input type="text" name="uname">
+<input type="submit">
+</form>
+</body>
+</html>
+
+File:DoPost.java
+import javax.servlet.http.*;
+import java.io.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+@WebServlet("/DoPost")
+public class DoPost extends HttpServlet {
+	
+protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+{
+	response.setContentType("text/html");  
+	PrintWriter pw=response.getWriter();
+	String n=request.getParameter("uname");
+	pw.println("Jay " +n);
+	pw.close();
+}
+}
+output->
+Name:Maharashtra    Submit
+
+Jay Maharashtra 
+
+
+
+3)Write a program to create servlet with doGet() 
+->
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+@WebServlet("/DoGet")
+public class DoGet extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		res.setContentType("text/html");
+		PrintWriter pw=res.getWriter();
+        pw.println("Welcome to servlet");
+		pw.close();
+	}
+}
+
+output->Welcome to servlet
+
+
+
+
+
+4)Write a Servlet program to check that life cycle methods are called by web container
+->File:Fourth.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+
+
+@WebServlet("/Fourth1")
+public class Fourth extends HttpServlet {
+	
+	public void init(ServletConfig config) throws ServletException 
+	{
+		
+    }
+	
+protected void service(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	response.setContentType("text/html");
+	PrintWriter pw=response.getWriter();
+	pw.println("Servlet invoked!");
+	
+	}
+
+
+public void destroy()
+	{
+	   
+	}
+
+}
+
+Output->Servlet invoked! 
+
+5)Write a program to create Cookie and again display its value.
+->GetValue.html
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Insert title here</title>
+</head>
+<body>
+<form action="FirstServlet" method="post">
+<input type="text" name="userName">
+<input type="submit">e
+</form>
+</body>
+</html>
+
+File:FirstServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/FirstServlet")
+public class FirstServlet extends HttpServlet 
+{
+	
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException 
+    {
+	
+			response.setContentType("text/html");
+			PrintWriter out=response.getWriter();
+			String n=request.getParameter("userName");
+			out.print(n);
+			Cookie c=new Cookie("uname",n);
+			response.addCookie(c);
+			
+			out.print("<form action=\"SecondServlet\" method=\"post\">");
+			out.print("<input type=\"submit\">");
+			out.print("</form>");
+		}
+	
+}
+
+
+File:SecondServlet.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/SecondServlet")
+public class SecondServlet extends HttpServlet {
+	
+   
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+   		PrintWriter pw=response.getWriter();
+		response.setContentType("text/html");
+		Cookie ck[]=request.getCookies();
+		String name=ck[0].getValue();
+		pw.print("Hello "+name);
+	}
+
+}
+output->
+vikas    submit
+
+vikas
+submit
+
+Hello vikas
+
+
+
+
+6)Write a program to create servlet to demonstrate session tracking
+
+->File:SessionDemo.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+import java.util.*;
+import javax.servlet.annotation.WebServlet;
+
+
+@WebServlet("/SessionDemo")
+public class SessionDemo extends HttpServlet {
+		protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+			
+			// Create a session object if it is already not  created.
+	           HttpSession session = request.getSession(true);
+	           // Get session creation time.
+	           Date createTime = new Date(session.getCreationTime());
+	           // Get last access time of this web page.
+	           Date lastAccessTime = new Date(session.getLastAccessedTime());
+	     
+	           String title = "Welcome Back to my website";
+	           Integer visitCount = new Integer(0);
+	           String visitCountKey = new String("visitCount");
+	           String userIDKey = new String("userID");
+	           String userID = new String("vikas");
+
+	           // Check if this is new comer on your web page.
+	           if (session.isNew())
+	           {
+	                title = "Welcome to my website";
+	                session.setAttribute(userIDKey, userID);
+	           }
+	           else
+	           {
+	                visitCount = (Integer)session.getAttribute(visitCountKey);
+	                visitCount = visitCount + 1;
+	                userID = (String)session.getAttribute(userIDKey);
+	           }
+	           session.setAttribute(visitCountKey,  visitCount);
+
+	           // Set response content type
+	           response.setContentType("text/html");
+	           PrintWriter out = response.getWriter();
+	           String str = "<html public \"-//w3c//dtd html 4.0 " +"transitional//en\">\n";
+	        	          
+	        	         
+
+	        	           out.println(str+"<html>\n" +"<head><title>" + title + "</title></head>\n" +"<body bgcolor=\"red\">\n" +
+	        	               
+	        	               "<h1 align=\"center\">" + title + "</h1>\n" +
+	        	               "<h2 align=\"center\">Session Infomation</h2>\n" +
+	        	               "<table border=\"1\" align=\"center\">\n" +
+	        	               "<tr bgcolor=\"red\">\n" +
+	        	               "<th>Session info</th><th>value</th></tr>\n" +
+	        	               "<tr>\n" +
+	        	               "  <td>id</td>\n" +
+	        	               "  <td>" + session.getId() + "</td></tr>\n" + "<tr>\n" +
+	        	               "  <td>Creation Time</td>\n" +
+	        	               "  <td>" + createTime +
+	        	               "  </td></tr>\n" +
+	        	               "<tr>\n" +
+	        	               "  <td>Time of Last Access</td>\n" +
+	        	               "  <td>" + lastAccessTime +
+	        	               "  </td></tr>\n" +
+	        	               "<tr>\n" +
+	        	               "  <td>User ID</td>\n" +
+	        	               "  <td>" + userID +
+	        	               "  </td></tr>\n" +
+	        	               "<tr>\n" +
+	        	               "  <td>Number of visits</td>\n" +
+	        	               "  <td>" + visitCount + "</td></tr>\n" +
+	        	               "</table>\n" +
+	        	                   "</body></html>");
+	        	         
+	        	 
+		}
+}
+
+output->
+
+     Welcome Back to my website
+
+        Session Infomation
+
+
+Session info                   value
+
+id                  04119081493BAA6088CEEF7E67FCBE5E 
+Creation Time       Mon Mar 13 15:04:23 IST 2023  
+Time of Last Access Mon Mar 13 15:07:02 IST 2023  
+User ID             vikas  
+Number of visits    3 
+
+
+
+
+
+
+
+
+
+
+
+
+
+7)Write a program to create Servlet to demonstrate Login and Logout using HttpSession.
+->file:index.html
+<html>
+<body>
+<h1>Login app using HttpSession</h1>  
+<a href="login.html">Login</a>|  
+<a href="LogoutServlet">Logout</a>|  
+<a href="ProfileServlet">Profile</a>  
+</body>
+</html>
+
+file:link.html
+<html>
+<body>
+<a href="login.html">Login</a> |  
+<a href="LogoutServlet">Logout</a> |  
+<a href="ProfileServlet">Profile</a>  
+<hr>  
+</body>
+</html>
+
+File:login.html
+<html>
+<body>
+<form action="LoginServlet" method="post">  
+Name:<input type="text" name="name"><br>  
+Password:<input type="password" name="password"><br>  
+<input type="submit" value="login">  
+</form>
+</body>
+</html>
+
+
+file:LoginServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/LoginServlet")
+public class LoginServlet extends HttpServlet {
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+
+		request.getRequestDispatcher("link.html").include(request,response);
+		String name=request.getParameter("name");
+		String password=request.getParameter("password");
+ 		if(password.equals("admin123"))
+		{
+			out.print("Welcome,"+name);
+			HttpSession session=request.getSession();
+			session.setAttribute("name",name);
+		}
+		else
+		{
+			out.print("sorry, username or password error!");
+			request.getRequestDispatcher("login.html").include(request, response);
+		}
+		out.close();
+}
+}
+
+File:LogoutServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/LogoutServlet")
+public class LogoutServlet extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		HttpSession session=request.getSession();
+		session.invalidate();
+		out.print("you are successfully logged out!");
+		out.close();
+	}
+}
+
+
+File:ProfileServlet.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/ProfileServlet")
+public class ProfileServlet extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		request.getRequestDispatcher("link.html").include(request, response);
+		HttpSession session=request.getSession(false);
+		if(session!=null)
+		{
+			String name=(String)session.getAttribute("name");
+			out.print("Hello,"+name+"Welcome to profile");
+		}
+		else
+		{
+			out.print("Please login first");
+			request.getRequestDispatcher("login.html").include(request, response);
+			
+		}
+		out.close();
+	}
+
+}
+
+
+File:web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" id="WebApp_ID" version="4.0">
+  <display-name>Assignment No 3</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+  </welcome-file-list>
+  <servlet>
+  <description>
+  </description>
+  <display-name>LoginServlet</display-name>
+  <servlet-name>LoginServlet</servlet-name>
+  <servlet-class>LoginServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+  <servlet-name>LoginServlet</servlet-name>
+  <url-pattern>/LoginServlet</url-pattern>
+  </servlet-mapping>
+  <servlet>
+  <description>
+  </description>
+  <display-name>ProfileServlet</display-name>
+  <servlet-name>ProfileServlet</servlet-name>
+  <servlet-class>ProfileServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+  <servlet-name>ProfileServlet</servlet-name>
+  <url-pattern>/ProfileServlet</url-pattern>
+  </servlet-mapping>
+   <servlet>
+  <description>
+  </description>
+  <display-name>LogoutServlet</display-name>
+  <servlet-name>LogoutServlet</servlet-name>
+  <servlet-class>LogoutServlet</servlet-class>
+   </servlet>
+   <servlet-mapping>
+  <servlet-name>LogoutServlet</servlet-name>
+  <url-pattern>/LogoutServlet</url-pattern>
+  </servlet-mapping>
+   </web-app>
+
+
+output->
+Name:vikas
+Password:admin123
+  login
+
+Login |   Logout |   Profile  
+   Welcome,vikas
+
+when click to profile
+ Hello,vikasWelcome to profile
+
+8)Write a program to create servlet for session management using Hidden Form Field.
+->File:Eight.html
+   
+<html>
+<body>
+<form action="servlet1">
+Name:<input type="text" name="userName"/><br>
+<input type="submit" value="go"/>
+</form>
+</body>
+</html>
+
+File:servlet1.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/servlet1")
+public class servlet1 extends HttpServlet {
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
+	{
+		try
+		{
+			res.setContentType("text/html");
+			PrintWriter pw=res.getWriter();
+			String n=req.getParameter("userName");
+			pw.print("welcome"+n);
+			
+			pw.print("<form action='servlet2'>");
+			pw.print("<input type='hidden' name='uname' value='"+n+"'>");
+			pw.print("<input type='submit' value='go'>");
+			pw.print("</form>");
+			pw.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+		}
+}
+
+File:servlet2.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/servlet2")
+public class servlet2 extends HttpServlet {
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try
+		{
+			response.setContentType("text/html");
+			PrintWriter out=response.getWriter();
+			String n=request.getParameter("uname");
+			out.print("hello"+n);
+			out.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+}
+
+output->
+Name:vikas
+go->click on go
+
+welcomevikas
+go->click on go
+
+hellovikas 
+
+
+9)Write a program to create servlet for session management using   URL Rewriting
+->File:Nine.html
+<html>
+<body>
+<form action="Nine1">
+Name:<input type="text" name="userName"/><br/>
+<input type="submit" vlaue="go">
+</form>
+</body>
+</html>
+
+File:Nine1.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/Nine1")
+public class Nine1 extends HttpServlet {
+ protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	 try
+	 {
+	response.setContentType("text/html");
+	PrintWriter out=response.getWriter();
+	String n=request.getParameter("userName");
+	out.print("Welcome"+n);
+	out.print("<a href='Nine2?uname="+n+"'>visit</a>");
+	out.close();
+	}
+ catch(Exception e)
+ {
+	 System.out.println(e);
+   }
+
+}
+}
+
+File:Nine2.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/Nine2")
+public class Nine2 extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		try
+		{
+			response.setContentType("text/html");
+			PrintWriter out=response.getWriter();
+			String n=request.getParameter("uname");
+			out.print("Hello"+n);
+			out.close();
+		}
+		catch(Exception e)
+		{
+			System.out.println(e);
+		}
+	}
+}
+output->
+Name:vikas
+submit->click on submit
+
+Welcome vikasvisit->click on visit
+
+Hello vikas
+
+
+
+10)Write a program to demonstrate simple use of Filter.
+->File:Ten.html
+<html>
+<body>
+<a href="Ten1">click here</a>
+</body>
+</html>
+
+File:Ten1.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/Ten1")
+public class Ten1 extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+	response.setContentType("text/html");
+	PrintWriter out=response.getWriter();
+	out.print("<br>welcome to servlet<br>");
+	}
+}
+
+File:MyFilter.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.*;
+
+@WebFilter("/MyFilter")
+public class MyFilter extends HttpFilter implements Filter
+{
+	public void init(FilterConfig fConfig) throws ServletException
+	{
+	}
+	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException 
+	{
+		PrintWriter out=response.getWriter();
+		out.print("filter is inovked before");
+		chain.doFilter(request, response);
+	}
+		
+public void destroy() 
+{
+}
+}
+
+File:web.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>  
+  <servlet>  
+<servlet-name>s1</servlet-name>  
+<servlet-class>Ten1</servlet-class>  
+</servlet>  
+  
+<servlet-mapping>  
+<servlet-name>s1</servlet-name>  
+<url-pattern>/Ten1</url-pattern>  
+</servlet-mapping>  
+  
+<filter>  
+<filter-name>f1</filter-name>  
+<filter-class>MyFilter</filter-class>  
+</filter>  
+   
+<filter-mapping>  
+<filter-name>f1</filter-name>  
+<url-pattern>/Ten1</url-pattern>  
+</filter-mapping>  
+</web-app>
+
+output->
+click here->link
+
+welcome to servlet
+
+
+11)Write a simple  program of authenticating user using filter.
+->File:Eleven.html
+<html>
+<body>
+<form action="Eleven">
+Name:<input type="text" name="password"/><br>
+<input type="submit" value="login">
+</form>
+</body>
+</html>
+
+File:MyFilter1.java
+import java.io.IOException;
+import java.io.PrintWriter;
+import javax.servlet.*;
+import javax.servlet.annotation.WebFilter;
+import javax.servlet.http.HttpFilter;
+
+
+@WebFilter("/MyFilter1")
+public class MyFilter1 extends HttpFilter implements Filter {
+	
+public void init(FilterConfig fConfig) throws ServletException 
+{
+}
+   public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+		PrintWriter out=response.getWriter();
+		String password=request.getParameter("password");
+		if(password.equals("admin"))
+		{
+		chain.doFilter(request, response);
+		}
+		else
+		{
+			out.print("username or password error");
+			RequestDispatcher rd=request.getRequestDispatcher("Eleven.java");
+			rd.include(request, response);
+		}
+	}
+	public void destroy()
+	{
+		
+	}
+
+}
+
+File:Eleven.java
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+@WebServlet("/Eleven")
+public class Eleven extends HttpServlet
+{
+	
+  protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
+  {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		out.print("welcome ADMIN");
+		out.close();
+	}
+}
+
+File:web3.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>
+<servlet>
+<servlet-name>Eleven</servlet-name>
+<servlet-class>Eleven</servlet-class>
+</servlet>
+
+<servlet-mapping>
+<servlet-name>Eleven</servlet-name>
+<url-pattern>/Eleven</url-pattern>
+</servlet-mapping>
+
+<filter>
+<filter-name>f1</filter-name>
+<filter-class>MyFilter1</filter-class>
+</filter>
+<filter-name>f1</filter-name>
+<url-pattern>/MyFilter1</url-pattern>
+</web-app>
+
+output->
+Name:admin
+login->click here
+
+Welcome ADMIN
+
+
+12)Write a simple program to demonstrate the use of request dispatcher
+->File:12.html
+<html>
+<body>
+<form action="Twelve" method="post">
+Name:<input type="text" name="userName"/><br/>
+Password:<input type="password" name="userPass"/><br/>
+<input type="submit" value="login"/>
+</form>
+</body>
+</html>
+
+File:Twelve.java
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+
+@WebServlet("/Twelve")
+public class Twelve extends HttpServlet {
+
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		String n=request.getParameter("userName");
+		String p=request.getParameter("userPass");
+		
+	if(p.equals("vikas"))
+	{
+		RequestDispatcher rd=request.getRequestDispatcher("Twelve1");
+		rd.forward(request, response);
+		}
+	else
+	{
+		out.print("sorry userName or Password Error!");
+		RequestDispatcher rd=request.getRequestDispatcher("/12.html");
+		rd.include(request, response);
+	}
+		
+	}
+
+}
+
+File:Twelve1.java
+
+
+import java.io.IOException;
+import java.io.PrintWriter;
+
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+@WebServlet("/Twelve1")
+public class Twelve1 extends HttpServlet {
+	
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		PrintWriter out=response.getWriter();
+		String n=request.getParameter("userName");
+		out.print("Welcome"+n);
+	}
+
+}
+
+File:Twelve.xml
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app>  
+ <servlet>  
+    <servlet-name>Twelve</servlet-name>  
+    <servlet-class>Twelve</servlet-class>  
+  </servlet>  
+  <servlet>  
+    <servlet-name>Twelve1</servlet-name>  
+    <servlet-class>Twelve1</servlet-class>  
+  </servlet>   
+  
+  <servlet-mapping>  
+    <servlet-name>Twelve</servlet-name>  
+    <url-pattern>/Twelve</url-pattern>  
+  </servlet-mapping>  
+  <servlet-mapping>  
+    <servlet-name>Twelve1</servlet-name>  
+    <url-pattern>/Twelve1</url-pattern>  
+  </servlet-mapping>  
+  
+  <welcome-file-list>  
+   <welcome-file>12.html</welcome-file>  
+</welcome-file-list>  
+</web-app>
+
+output->
+Name:vijay
+Password:....->vikas
+login->click here
+ 
+Welcomevijay
+
+
+13)Write a simple program to demonstrate the use of Send Redirect.
+->File:Thirteen.java
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.*;
+@WebServlet("/Thirteen")
+public class Thirteen extends HttpServlet {
+	
+	protected void doGet(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+		res.setContentType("text/html");
+		PrintWriter pw=res.getWriter();
+		res.sendRedirect("http://www.google.com");
+		pw.close();
+	}
+
+}
+
+output->go to the google page
+
+
+
+     
+
+
+
+
